@@ -3,8 +3,8 @@
 /**
  * Plugin Name: IranDargah Gravity Forms
  * Author: IranDargah
- * Description: درگاه پرداخت <a href="https://irandargah.com">ایران درگاه</a> برای Gravity Forms.
- * Version: 1.0.1
+ * Description: درگاه پرداخت <a href="https://irandargah.com">ایران درگاه</a> برای Gravity Forms
+ * Version: 1.0.2
  * Author URI: https://irandargah.com
  * Author Email: info@irandargah.com
  * Text Domain: irandargah-gravity-forms
@@ -23,7 +23,7 @@ require_once('lib/IranDargah_Chart.php');
 class GF_Gateway_IranDargah
 {
     public static $author = "IranDargah";
-    private static $version = "1.0.1";
+    private static $version = "1.0.2";
     private static $min_gravityforms_version = "1.9.10";
     private static $config = null;
 
@@ -1070,7 +1070,7 @@ class GF_Gateway_IranDargah
 
         $Transaction_ID = !empty($Transaction_ID) ? $Transaction_ID : (!empty($authority) ? $authority : '-');
 
-        if (!$free && !empty($amount) && !empty($orderId)) {
+        if (!$free && !empty($amount) && !empty($orderId) && $Amount == $amount) {
 
             if ($code == 100) {
                 $porder_id  = sanitize_text_field($orderId);
@@ -1078,14 +1078,14 @@ class GF_Gateway_IranDargah
 
                 if (!empty($porder_id) && $porder_id == $entry_id) {
 
-                    $__params = $Amount . $authority;
+                    $__params = $amount . $authority;
                     if (GFPersian_Payments::check_verification($entry, __CLASS__, $__params)) {
                         return;
                     }
                     $data = [
                         'merchantID' => $merchantID,
                         'authority'  => $authority,
-                        'amount'     => $Amount,
+                        'amount'     => $amount,
                         'orderId'    => $entry_id,
                     ];
 
@@ -1213,7 +1213,7 @@ class GF_Gateway_IranDargah
             $entry["is_fulfilled"]   = 0;
             GFAPI::update_entry($entry);
 
-            $message = $Note = sprintf(__('وضعیت پرداخت :%s (کد خطا: %s) - مبلغ قابل پرداخت : %s', "gravityformsIranDargah"), self::getStatus($status_code), $status_code, $Total_Money);
+            $message = $Note = sprintf(__('وضعیت پرداخت :%s | مبلغ سفارش : %s', "gravityformsIranDargah"), self::getStatus($status_code), $Total_Money);
             $Note .= print_r($params, true);
         }
 
