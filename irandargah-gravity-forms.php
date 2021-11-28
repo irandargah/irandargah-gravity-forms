@@ -899,7 +899,7 @@ class GF_Gateway_IranDargah
             } else if (empty($result) or empty($result->authority)) {
                 $Message = sprintf('خطا هنگام ایجاد تراکنش: %s (کد خطا: %s)', $result->message, $result->status);
             } else {
-                $payment_URL = self::get_sandbox() == "false" ? 'ird/startpay/' . $result->authority : 'sandbox/ird/startpay/' . $result->authority;
+                $payment_URL = self::get_sandbox() == "false" ? 'https://dargaah.com/ird/startpay/' . $result->authority : 'https://dargaah.com/sandbox/ird/startpay/' . $result->authority;
                 return self::redirect_confirmation($payment_URL, $ajax);
             }
         }
@@ -950,9 +950,8 @@ class GF_Gateway_IranDargah
         return $gname;
     }
 
-    private static function redirect_confirmation($action, $ajax)
+    private static function redirect_confirmation($url, $ajax)
     {
-        $url = 'https://dargaah.com/'.$action;
         if (headers_sent() || $ajax) {
             $confirmation = "<script type=\"text/javascript\">" . apply_filters('gform_cdata_open', '') . " function gformRedirect(){document.location.href='$url';}";
             if (!$ajax) {
